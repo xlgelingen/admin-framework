@@ -3,6 +3,7 @@ import cookies from 'js-cookie';
 import routes from './routes';
 import NProgress from 'nprogress';
 import userService from '@/services/user';
+import permissionService from '@/services/permission'
 import { useStore } from '@/stores/index.js';
 
 const TOKEN_KEY = 'web_token';
@@ -26,14 +27,20 @@ appRouter.firstInit = false;
 
 //beforeEach 导航守卫，用于在每次路由切换之前执行一些逻辑
 appRouter.beforeEach(async (to, from, next) => {
-  //启动了进度条 NProgress.start()；
+  //启动了进度条 NProgress.start()；以提示用户当前页面正在加载中。
   NProgress.start();
 
   //设置了页面的标题，根据路由元信息中的 title 字段
-  if (to.meta.title) document.title = to.meta.title;
+  if (to.meta.nav?.title) document.title = to.meta.nav.title;
 
   const store = useStore();
   const token = cookies.get(TOKEN_KEY);
+
+  // 没有 TOKEN 的情况下的处理，要么跳走，要么去登录页面。
+  if (!token && !['AccountLogin'].includes(to.name)) {
+    next({ name: 'AccountLogin' })
+    return
+  }
 
   // 有 TOKEN 的情况下只请求一次用户信息
   /* 如果存在 token 并且尚未初始化过用户信息（appRouter.firstInit 为 false），
@@ -41,18 +48,21 @@ appRouter.beforeEach(async (to, from, next) => {
   if (token && !appRouter.firstInit) {
     try {
       const userInfo = await userService.getUserInfo();
+      const permissions = await permissionService.getPermissions()
       store.setUserInfo(userInfo);
+      store.setPermissions(permissions)
+
+      // 没有任何权限要么跳走，要么去提示页面
+      if (!permissions?.length) {
+        next({ name: 'Forbidden' })
+        return
+      }
       appRouter.firstInit = true;
     } catch (e) {
       next();
     }
   }
 
-  //如果用户尚未登录且当前路由需要进行权限验证（to.meta.auth 为 true），则跳转到首页；
-  if (!store.userInfo?.id && to.meta.auth) {
-    next({ name: 'Home' });
-    return;
-  }
   next();
 });
 

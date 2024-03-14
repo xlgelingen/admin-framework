@@ -11,6 +11,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
     "axios": "^1.6.7",
     "element-plus": "^2.6.1",
     "js-cookie": "^3.0.5",

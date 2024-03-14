@@ -1,7 +1,11 @@
 import BasicLayout from '@/components/layout/BasicLayout.vue';
 import Home from '@/views/HomeIndex.vue';
 import NotFound from '@/views/Common/NotFound.vue';
+import Forbidden from '@/views/Common/ForbiddenIndex.vue'
+import AccountLogin from '@/views/Common/AccountLogin.vue'
 import routesAcademy from './routesAcademy';
+import routesPermission from './routesPermission'
+import routesArticle from './routesArticle'
 
 export default [
   {
@@ -15,10 +19,22 @@ export default [
       {
         path: '/',
         name: 'Home',
-        component: Home
+        component: Home,
       },
-      ...routesAcademy
+      ...routesAcademy,
+      ...routesArticle,
+      ...routesPermission
     ]
+  },
+  {
+    path: '/login',
+    name: 'AccountLogin',
+    component: AccountLogin
+  },
+  {
+    path: '/403',
+    name: 'Forbidden',
+    component: Forbidden
   },
   {
     path: "/404",
