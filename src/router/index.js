@@ -37,10 +37,10 @@ appRouter.beforeEach(async (to, from, next) => {
   const token = cookies.get(TOKEN_KEY);
 
   // 没有 TOKEN 的情况下的处理，要么跳走，要么去登录页面。
-  // if (!token && !['AccountLogin'].includes(to.name)) {
-  //   next({ name: 'AccountLogin' })
-  //   return
-  // }
+  if (!token && !['AccountLogin'].includes(to.name)) {
+    next({ name: 'AccountLogin' })
+    return
+  }
 
   // 有 TOKEN 的情况下只请求一次用户信息
   /* 如果存在 token 并且尚未初始化过用户信息（appRouter.firstInit 为 false），
@@ -59,10 +59,11 @@ appRouter.beforeEach(async (to, from, next) => {
       }
       appRouter.firstInit = true;
     } catch (e) {
+      console.error('Error:', e);
       next();
+      return;
     }
   }
-
   next();
 });
 
@@ -71,6 +72,7 @@ appRouter.beforeEach(async (to, from, next) => {
 appRouter.afterEach((to, from) => {
   //结束进度条
   NProgress.done();
+  // window.location.reload();
 });
 
 export default appRouter;

@@ -20,6 +20,15 @@ export default [
         path: '/',
         name: 'Home',
         component: Home,
+        meta: {
+          nav: {
+            icon: 'icon-home',
+            title: '首页'
+          },
+          breadcrumb: {
+            name: '首页'
+          }
+        },
       },
       ...routesAcademy,
       ...routesArticle,

@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref,watch } from 'vue'
+import { useRoute} from 'vue-router'
 import { useStore } from '@/stores/index'
 import { RotateLeftOutlined } from '@ant-design/icons-vue'
 import routesAll from '@/router/routes'
-import { formatRoutes} from '@/utils/permission'
+import { formatRoutes } from '@/utils/permission'
 const route = useRoute()
 //获取用户拥有的权限列表
 const { permissions } = useStore()
@@ -16,6 +16,9 @@ const navRoutes = ref(formatRoutes(routesAll, permissions))
 
 //激活的路由name
 const activeIndex = ref(route.name)
+watch(route, (to, from) => {
+    activeIndex.value = to.name
+})
 </script>
 
 <template>
@@ -35,8 +38,8 @@ const activeIndex = ref(route.name)
                 <el-menu :collapse="isCollapse" :router="true" :default-active="activeIndex">
                     <!-- <template> 标签的v-for渲染-->
                     <template v-for="route in navRoutes">
-                        <!-- 若有子路由，渲染这个 -->  <!-- 以:index作为path进行路由跳转 -->
-                        <el-sub-menu v-if="route.children.length" :index="route.name" :key="route.path">
+                        <!-- 若有子路由，渲染这个 --> <!-- 以:index作为path进行路由跳转 -->
+                        <el-sub-menu v-if="route.children?.length" :index="route.name" :key="route.path">
                             <!-- sub-menu子菜单的名字插槽 -->
                             <template #title>
                                 <svg-icon v-if="route.meta.nav?.icon" :name="route.meta.nav.icon" width="24px"
@@ -48,7 +51,7 @@ const activeIndex = ref(route.name)
                                 <el-menu-item v-for="data in route.children" :key="data.name" :index="data.name"
                                     :route="{ name: data.name }">
                                     <svg-icon v-if="data.meta.nav?.icon" :name="data.meta.nav.icon" width="24px"
-                                    height="18px" style="margin-right: 5px;"></svg-icon>
+                                        height="18px" style="margin-right: 5px;"></svg-icon>
                                     <span>{{ data.meta.nav.title }}</span>
                                 </el-menu-item>
                             </el-menu-item-group>
@@ -56,6 +59,8 @@ const activeIndex = ref(route.name)
 
                         <!-- 若没有子路由，渲染这个 -->
                         <el-menu-item v-else :key="route.name" :index="route.name" :route="{ name: route.name }">
+                            <svg-icon v-if="route.meta.nav?.icon" :name="route.meta.nav.icon" width="24px" height="18px"
+                                style="margin-right: 5px;"></svg-icon>
                             <span>{{ route.meta.nav.title }}</span>
                         </el-menu-item>
                     </template>

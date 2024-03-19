@@ -1,11 +1,11 @@
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute} from 'vue-router'
 import BasicLayoutHeader from './BasicLayoutHeader.vue'
 import BasicLayoutSider from './BasicLayoutSider.vue'
 import BasicLayoutFooter from './BasicLayoutFooter.vue';
 
-const route = useRoute()
+const route = useRoute();
 
 const breadcrumb = computed(() => route.matched.filter((data) => data.meta?.breadcrumb))
 
@@ -14,26 +14,28 @@ const breadcrumb = computed(() => route.matched.filter((data) => data.meta?.brea
 <template>
   <div class="page-wrapper">
     <BasicLayoutSider class="page-sider" />
+
     <div class="page-mainer">
+
       <BasicLayoutHeader class="page-header" />
+
       <div class="page-body">
         <el-scrollbar>
           <div class="breadcrumb-container">
             <el-breadcrumb>
-              <!-- <el-breadcrumb-item v-for="step in breadcrumb" :key="step.name">
-                <el-breadcrumb-item :to="{ name: step.name }" :key="step.name" :replace="true">
-                  {{ step.meta.breadcrumb.name }}
-                </el-breadcrumb-item>
-              </el-breadcrumb-item> -->
-              <el-breadcrumb-item v-for="step in breadcrumb" :key="step.name" :to="{ name: step.name }" :replace="true">
-                  {{ step.meta.breadcrumb.name }}
+              <el-breadcrumb-item v-for="step in breadcrumb" :key="step.name" :to="{ name: step.name }"
+                :replace="true">
+                {{ step.meta.breadcrumb.name }}
               </el-breadcrumb-item>
+
             </el-breadcrumb>
           </div>
           <router-view></router-view>
         </el-scrollbar>
       </div>
+
       <BasicLayoutFooter class="page-basic-footer" />
+
     </div>
   </div>
 </template>
