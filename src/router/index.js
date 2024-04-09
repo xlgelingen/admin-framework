@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import cookies from 'js-cookie';
 import routes from './routes';
 import NProgress from 'nprogress';
+import 'nprogress/nprogress.css' // nprogress样式
+
 import userService from '@/services/user';
 import permissionService from '@/services/permission'
 import { useStore } from '@/stores/index.js';
